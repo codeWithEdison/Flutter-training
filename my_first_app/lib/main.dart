@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
+import './loyout.dart';
+import './productbox.dart';
+import './gestures.dart';
+import './pruduct_page.dart';
+import './hrrp.dart'; 
+
+
 
 void main(){
-  runApp(  MyApp());
+ runApp(MyApi()); 
 }
 
 class MyApp extends StatefulWidget {
    MyApp({super.key});
 
-  @override
+  @override 
   State<MyApp> createState() => _MyAppState();
 }
 
@@ -16,9 +23,43 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const  MaterialApp(
       debugShowCheckedModeBanner: false, 
-      home: Scaffold(
+      home: ProductList()
+    );
+  }
+}
+ 
+ class ProductList extends StatefulWidget {
+   const ProductList({super.key});
+
+  @override
+  State<ProductList> createState() => _ProductListState();
+}
+
+class _ProductListState extends State<ProductList> {
+   int activeIndex = 0;
+   @override
+
+   Widget build(BuildContext context) {
+
+    // ssample data 
+    final products = [
+      {
+        "name": "Laptop",
+        "description": "A high-end laptop",
+        "price": "1200",
+        "image": "mac.jpeg"
+      },
+      {
+        "name": "Smartphone",
+        "description": "Latest smartphone",
+        "price": "800",
+        "image": "iphone.jpeg"
+      },
+    ];
+
+     return Scaffold(
         appBar: AppBar(
           title:  const Center(
             child:  Text("my App")
@@ -27,40 +68,60 @@ class _MyAppState extends State<MyApp> {
             backgroundColor: Colors.blueAccent,
           
           ),
-          body:  Center(
-            child: Column(
-              children: [
-                Image.asset('images/view.jpg'),
-                // Image.network('https://c4.wallpaperflare.com/wallpaper/715/993/112/mountain-gorilla-silverback-rwanda-wallpaper-preview.jpg') ,
-                ElevatedButton(
-                 onPressed: (){
-                 setState(() {
-                   buttonText =" hey am clicked ";  
-                 });
-                 },
-                   child:   Text(buttonText)),
-                
-                
-                
-                
-              ],
-            ) ,
-          
+          body:  ListView.builder(
+            itemCount: products.length,
+            itemBuilder: (context, index) {
+              final product = products[index];
+              return GestureDetector(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>ProductPage(
+                    name: product['name']!,
+                     description: product['description']!,
+                      price: product['price']!,
+                       image: product['image']!))
+                    );
+                    
+                },
+                child: ProductBox(
+                 name: product['name']!,
+                     description: product['description']!,
+                      price: product['price']!,
+                       image: product['image']!),
+              );
+
+              
+            }
           ),
           bottomNavigationBar: BottomNavigationBar(
             // type: BottomNavigationBarType.fixed,
             items: const [
               
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(icon: Icon(Icons.home,), label: 'Home',
+          
+            ),
             // BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
             BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favorite'),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+
           ],
           backgroundColor: Colors.blue,
-          currentIndex: 2,
+          currentIndex: activeIndex, 
+          onTap: (int index) => {
+            setState(() {
+            activeIndex = index;  
+            })
+          },
           ),
+               
+                
+                
+        
+          );
           
-      ),
-    );
-  }
+          
+      ;
+   }
 }
